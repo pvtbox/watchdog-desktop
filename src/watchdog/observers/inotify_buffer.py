@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2014 Thomas Amland <thomas.amland@gmail.com>
+# Copyright © 2020  Pb Private Cloud Solutions Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,7 +60,6 @@ class InotifyBuffer(BaseThread):
         while self.should_keep_running() and not deleted_self:
             inotify_events = self._inotify.read_events()
             for inotify_event in inotify_events:
-                logger.debug("in-event %s", inotify_event)
                 if inotify_event.is_moved_to:
 
                     def matching_from_event(event):

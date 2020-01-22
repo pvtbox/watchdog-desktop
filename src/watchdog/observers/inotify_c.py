@@ -2,6 +2,7 @@
 #
 # Copyright 2011 Yesudeep Mangalapilly <yesudeep@gmail.com>
 # Copyright 2012 Google, Inc.
+# Copyright © 2020  Pb Private Cloud Solutions Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -344,7 +345,7 @@ class Inotify(object):
                 event_list.append(inotify_event)
 
                 if (self.is_recursive and inotify_event.is_directory and
-                        inotify_event.is_create):
+                        (inotify_event.is_create or inotify_event.is_moved_to)):
 
                     # TODO: When a directory from another part of the
                     # filesystem is moved into a watched directory, this
@@ -353,6 +354,12 @@ class Inotify(object):
                     # IN_MOVED_TO events which don't pair up with
                     # IN_MOVED_FROM events should be marked IN_CREATE
                     # instead relative to this directory.
+
+                    # addition for above "TODO" issue
+                    if (inotify_event.is_moved_to and
+                            self._wd_for_path.get(src_path, False)):
+                        continue
+
                     try:
                         self._add_watch(src_path, self._event_mask)
                     except OSError:
